@@ -5,7 +5,10 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon app.js"
+    "start": "nodemon app.js",
+    "undomigrate": "npx sequelize-cli db:migrate:undo:all",
+    "migrate": "sequelize db:migrate",
+    "createmodel": "npx sequelize-cli model:generate --name Drafts --attributes motherName:string,fatherName:string,maritalStatus:string,phoneContact:string,province:string"
   },
   "keywords": [],
   "author": "",
