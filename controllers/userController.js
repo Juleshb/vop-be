@@ -1,4 +1,4 @@
-const { User } = require('../models');
+const User = require('../models/user');
 
 const createUser = async (req, res) => {
   try {
@@ -27,14 +27,12 @@ const updateUser = async (req, res) => {
   try {
     const { id } = req.params;
     const { username, email, password } = req.body;
-    const [updated] = await User.update({
+    const user = await User.findByIdAndUpdate(id, {
       username,
       email,
       password
-    }, {
-      where: { id }
     });
-    if (updated) {
+    if (user) {
       res.status(200).json({
         success: true,
         message: 'User updated successfully'
@@ -58,10 +56,8 @@ const updateUser = async (req, res) => {
 const deleteUser = async (req, res) => {
   try {
     const { id } = req.params;
-    const deleted = await User.destroy({
-      where: { id }
-    });
-    if (deleted) {
+    const user = await User.findByIdAndDelete(id);
+    if (user) {
       res.status(200).json({
         success: true,
         message: 'User deleted successfully'
@@ -85,9 +81,7 @@ const deleteUser = async (req, res) => {
 const getUserById = async (req, res) => {
   try {
     const { id } = req.params;
-    const user = await User.findOne({
-      where: { id }
-    });
+    const user = await User.findById(id);
     if (user) {
       res.status(200).json({
         success: true,
@@ -111,7 +105,7 @@ const getUserById = async (req, res) => {
 
 const getAllUsers = async (req, res) => {
   try {
-    const users = await User.findAll();
+    const users = await User.find();
     res.status(200).json({
       success: true,
       data: users

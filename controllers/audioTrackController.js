@@ -1,14 +1,14 @@
-const { AudioTrack } = require('../models'); // Assuming your model is named AudioTrack
+const AudioTrack = require('../models/audiotrack');
 
 // Controller function to create a new audio track
 const createTrack = async (req, res) => {
   try {
-    const { title, artist, duration, AlbumId } = req.body;
+    const { title, artist, duration, albumId } = req.body; // Assuming albumId is used to reference the Album model
     const track = await AudioTrack.create({
       title,
       artist,
       duration,
-      AlbumId
+      albumId
     });
     res.status(201).json({
       success: true,
@@ -29,16 +29,14 @@ const createTrack = async (req, res) => {
 const updateTrack = async (req, res) => {
   try {
     const { id } = req.params;
-    const { title, artist, duration, AlbumId } = req.body;
-    const [updated] = await AudioTrack.update({
+    const { title, artist, duration, albumId } = req.body;
+    const track = await AudioTrack.findByIdAndUpdate(id, {
       title,
       artist,
       duration,
-      AlbumId
-    }, {
-      where: { id }
+      albumId
     });
-    if (updated) {
+    if (track) {
       res.status(200).json({
         success: true,
         message: 'Track updated successfully'
@@ -63,10 +61,8 @@ const updateTrack = async (req, res) => {
 const deleteTrack = async (req, res) => {
   try {
     const { id } = req.params;
-    const deleted = await AudioTrack.destroy({
-      where: { id }
-    });
-    if (deleted) {
+    const track = await AudioTrack.findByIdAndDelete(id);
+    if (track) {
       res.status(200).json({
         success: true,
         message: 'Track deleted successfully'
@@ -91,9 +87,7 @@ const deleteTrack = async (req, res) => {
 const getTrackById = async (req, res) => {
   try {
     const { id } = req.params;
-    const track = await AudioTrack.findOne({
-      where: { id }
-    });
+    const track = await AudioTrack.findById(id);
     if (track) {
       res.status(200).json({
         success: true,
@@ -118,7 +112,7 @@ const getTrackById = async (req, res) => {
 // Controller function to select all audio tracks
 const getAllTracks = async (req, res) => {
   try {
-    const tracks = await AudioTrack.findAll();
+    const tracks = await AudioTrack.find();
     res.status(200).json({
       success: true,
       data: tracks

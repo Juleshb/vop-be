@@ -1,5 +1,6 @@
-const { Album } = require('../models');
+const Album = require('../models/album');
 
+// Controller function to create a new album
 const createAlbum = async (req, res) => {
   try {
     const { title, artist, release_date } = req.body;
@@ -23,18 +24,17 @@ const createAlbum = async (req, res) => {
   }
 };
 
+// Controller function to update an existing album
 const updateAlbum = async (req, res) => {
   try {
     const { id } = req.params;
     const { title, artist, release_date } = req.body;
-    const [updated] = await Album.update({
+    const album = await Album.findByIdAndUpdate(id, {
       title,
       artist,
       release_date
-    }, {
-      where: { id }
     });
-    if (updated) {
+    if (album) {
       res.status(200).json({
         success: true,
         message: 'Album updated successfully'
@@ -55,13 +55,12 @@ const updateAlbum = async (req, res) => {
   }
 };
 
+// Controller function to delete an album
 const deleteAlbum = async (req, res) => {
   try {
     const { id } = req.params;
-    const deleted = await Album.destroy({
-      where: { id }
-    });
-    if (deleted) {
+    const album = await Album.findByIdAndDelete(id);
+    if (album) {
       res.status(200).json({
         success: true,
         message: 'Album deleted successfully'
@@ -82,12 +81,11 @@ const deleteAlbum = async (req, res) => {
   }
 };
 
+// Controller function to select one album by ID
 const getAlbumById = async (req, res) => {
   try {
     const { id } = req.params;
-    const album = await Album.findOne({
-      where: { id }
-    });
+    const album = await Album.findById(id);
     if (album) {
       res.status(200).json({
         success: true,
@@ -109,9 +107,10 @@ const getAlbumById = async (req, res) => {
   }
 };
 
+// Controller function to select all albums
 const getAllAlbums = async (req, res) => {
   try {
-    const albums = await Album.findAll();
+    const albums = await Album.find();
     res.status(200).json({
       success: true,
       data: albums
