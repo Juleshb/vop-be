@@ -5,6 +5,11 @@ require('dotenv').config();
 const app = express();
 const port = process.env.PORT || 3000;
 
+//import routers
+const audioTrackRouter = require('./routers/audioTrackRoutes');
+const albumRouter = require('./routers/albumRoutes');
+const userRoutes = require('./routers/userRoutes');
+
 // Create a PostgreSQL connection pool
 const pool = new Pool({
   connectionString: process.env.DbConnection,
@@ -41,6 +46,11 @@ app.get('/', async (req, res) => {
     res.status(500).send('Error occurred');
   }
 });
+
+// Mount the routes for AudioTrack and Album
+app.use('/api', audioTrackRouter);
+app.use('/api', albumRouter);
+app.use('/api', userRoutes);
 
 // Start the server
 app.listen(port, () => {
